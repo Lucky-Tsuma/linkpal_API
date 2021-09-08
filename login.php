@@ -18,6 +18,8 @@ if($result0 -> rowCount() == 0){
 		$lastname = $row["lastname"];
 		$user_id = $row["user_id"];
 		$phone_number = $row["phone_number"];
+		$longitude = $row["longitude"];
+		$latitude = $row["latitude"];
 	}
 		//phone_number exixts, but the password is wrong
 	if(password_verify($password, $returned_password) == false) {
@@ -31,7 +33,7 @@ if($result0 -> rowCount() == 0){
 	}
 
 	if($result1 -> rowCount() == 0) {
-		echo json_encode(['error' => false, 'message' => "Login successfull!", 'userType' => "employer", 'firstname' => $firstname,  'lastname' => $lastname, 'user_id' => $user_id, 'phone_number' => $phone_number]);
+		echo json_encode(['error' => false, 'message' => "Login successfull!", 'userType' => "employer", 'firstname' => $firstname,  'lastname' => $lastname, 'user_id' => $user_id, 'phone_number' => $phone_number, 'longitude' => $longitude, 'latitude' => $latitude]);
 	} else {
 		$sql_pic = "SELECT profile_pic from users_extras WHERE phone_number = '$phone'";
 		$result_pic = $conn -> prepare($sql_pic);
@@ -50,7 +52,7 @@ if($result0 -> rowCount() == 0){
 				$rating = $row['AVG(rating)'];
 			}
 		}
-		echo json_encode(['error' => false, 'message' => "Login successfull!", 'userType' => "worker", 'firstname' => $firstname, 'lastname' => $lastname, 'profile_pic' => $profile_pic, 'user_id' => $user_id, 'phone_number' => $phone_number, 'rating' => $rating]);
+		echo json_encode(['error' => false, 'message' => "Login successfull!", 'userType' => "worker", 'firstname' => $firstname, 'lastname' => $lastname, 'profile_pic' => $profile_pic, 'user_id' => $user_id, 'phone_number' => $phone_number, 'rating' => $rating, 'longitude' => $longitude, 'latitude' => $latitude]);
 	}
 }
 
