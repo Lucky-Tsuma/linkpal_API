@@ -1,7 +1,6 @@
 <?php
 // An associative array for the response
 $response = array();
-
 require_once __DIR__.'/config.php';
 
 $sql0 = "SELECT jobs.job_id, users.firstname, users.lastname, jobs.job_description, jobs.post_date, specialty.specialty_name, users.phone_number, users.longitude, users.latitude 
