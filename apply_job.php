@@ -12,6 +12,7 @@ $previous_job_requests = array();
 
 $sql0 = "SELECT job_id FROM job_requests WHERE user_id = '$user_id'";
 $result0 = $conn -> prepare($sql0);
+$result0 -> execute();
 
 $sql1 = "INSERT INTO job_requests(user_id, job_id, bidding_amount, proposal, request_date) VALUES (?, ?, ?, ?, ?)";
 $result1 = $conn -> prepare($sql1);
@@ -26,7 +27,6 @@ while($row = $result0 -> fetch()) {
 if(in_array($job_id, $previous_job_requests)) {
 
 	echo json_encode(['error' => true, 'message' => "You already applied for this job"]);
-	exit();
 
 } else {
 
