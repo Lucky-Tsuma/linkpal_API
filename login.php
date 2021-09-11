@@ -47,7 +47,7 @@ if($result0 -> rowCount() == 0){
 		$result_rating -> execute();
 		while($row = $result_rating -> fetch()) {
 			if($row['AVG(rating)'] == null) {
-				$rating = 0.0;
+				$rating = 0;
 			} else {
 				$rating = $row['AVG(rating)'];
 			}
