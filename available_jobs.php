@@ -6,7 +6,8 @@ require_once __DIR__.'/config.php';
 $sql0 = "SELECT jobs.job_id, users.firstname, users.lastname, jobs.job_description, jobs.post_date, specialty.specialty_name, users.phone_number, users.longitude, users.latitude 
 FROM jobs 
 inner join specialty on jobs.job_specialty = specialty.specialty_id 
-inner join users on jobs.user_id = users.user_id";
+inner join users on jobs.user_id = users.user_id
+WHERE status = 'pending'";
 
 $result0 = $conn->prepare($sql0);
 $result0 -> execute();

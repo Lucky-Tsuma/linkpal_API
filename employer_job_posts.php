@@ -10,7 +10,7 @@ $user_id = $_POST["user_id"];
 $sql0 = "SELECT jobs.job_id, jobs.job_description, jobs.post_date, specialty.specialty_name
 FROM jobs 
 inner join specialty on jobs.job_specialty = specialty.specialty_id 
-where jobs.user_id = '$user_id'";
+WHERE jobs.user_id = '$user_id' AND status = 'pending'";
 
 $result0 = $conn->prepare($sql0);
 $result0 -> execute();
