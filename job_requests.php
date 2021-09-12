@@ -39,16 +39,30 @@ if($result -> rowCount() > 0) {
 		$request["request_date"] = date('Y/m/d H:i', $row["request_date"]);
 		$request["phone_number"] = $row["phone_number"];
 
+		$worker_id = $row["user_id"];
+
+		$sql_rating = "SELECT AVG(rating) FROM work_ratings WHERE worker_id = '$worker_id'";
+		$result_rating = $conn -> prepare($sql_rating);
+		$result_rating -> execute();
+		while($row = $result_rating -> fetch()) {
+			if($row['AVG(rating)'] == null) {
+				$request["rating"] = 0;
+			} else {
+				$request["rating"] = $row['AVG(rating)'];
+			}
+		}
 		array_push($response["requests"], $request);
+		
+	} 
+		echo json_encode($response);
+
+	} else {
+
+		$response["message"] = "false";
+		echo json_encode($response);
+
 	}
-	echo json_encode($response);
-} else {
 
-	$response["message"] = "false";
-	echo json_encode($response);
-
-}
-
-$conn = null;
+	$conn = null;
 
 ?>
