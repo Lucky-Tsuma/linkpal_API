@@ -6,6 +6,18 @@ $response = array();
 require_once __DIR__.'/config.php';
 
 $user_id = $_POST["employer_id"];
+$employer_longitude = $_POST["longitude"];
+$employer_latitude = $_POST["latitude"];
+
+function getDistance($lat1, $lon1, $lat2, $lon2) {
+  $earthRadius = 6371; // Radius of the earth in km
+  $diffLatitude = deg2rad($lat2-$lat1);  // degrees to radians
+  $diffLongitude = deg2rad($lon2-$lon1); 
+  $a =  sin($diffLatitude/2) * sin($diffLatitude/2) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($diffLongitude/2) * sin($diffLongitude/2); 
+  $c = 2 * atan2(sqrt($a), sqrt(1-$a)); 
+  $distance = $earthRadius * $c; // Distance in km
+  return $distance;
+}
 
 $sql = "SELECT job_requests.job_id, job_requests.user_id,  job_requests.bidding_amount, job_requests.proposal, users.firstname, users.lastname,  users.longitude, users.latitude, specialty.specialty_name, job_requests.request_date, users.phone_number
 FROM job_requests
@@ -40,6 +52,8 @@ if($result -> rowCount() > 0) {
 		$request["phone_number"] = $row["phone_number"];
 
 		$worker_id = $row["user_id"];
+		$worker_longitude = $row["longitude"];
+		$worker_latitude = $row["latitude"];
 
 		$sql_rating = "SELECT AVG(rating) FROM work_ratings WHERE worker_id = '$worker_id'";
 		$result_rating = $conn -> prepare($sql_rating);
@@ -51,6 +65,9 @@ if($result -> rowCount() > 0) {
 				$request["rating"] = $row['AVG(rating)'];
 			}
 		}
+
+		$request["distance"] = getDistance($employer_latitude, $employer_longitude, $worker_latitude, $worker_longitude);
+		
 		array_push($response["requests"], $request);
 		
 	} 
