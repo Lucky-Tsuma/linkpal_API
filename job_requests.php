@@ -1,18 +1,26 @@
 <?php
 
+require_once __DIR__.'/quicksort.php';
+require_once __DIR__.'/config.php';
+
 // An associative array for the response
 $response = array();
-
-require_once __DIR__.'/config.php';
 
 $user_id = $_POST["employer_id"];
 $employer_longitude = $_POST["longitude"];
 $employer_latitude = $_POST["latitude"];
+$sort_method = $_POST["sort_method"];
+/*case 1 = rating, 2 = distance, 3 = price*/
 
 function getDistance($lat1, $lon1, $lat2, $lon2) {
+	$lat1 = (float) $lat1;
+	$lon1 = (float) $lon1; 
+	$lat2 = (float) $lat2; 
+	$lon2 = (float) $lon2;
+
   $earthRadius = 6371; // Radius of the earth in km
   $diffLatitude = deg2rad($lat2-$lat1);  // degrees to radians
-  $diffLongitude = deg2rad($lon2-$lon1); 
+  $diffLongitude = deg2rad($lon2-$lon1);
   $a =  sin($diffLatitude/2) * sin($diffLatitude/2) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($diffLongitude/2) * sin($diffLongitude/2); 
   $c = 2 * atan2(sqrt($a), sqrt(1-$a)); 
   $distance = $earthRadius * $c; // Distance in km
@@ -67,19 +75,39 @@ if($result -> rowCount() > 0) {
 		}
 
 		$request["distance"] = getDistance($employer_latitude, $employer_longitude, $worker_latitude, $worker_longitude);
-		
+
 		array_push($response["requests"], $request);
 		
 	} 
-		echo json_encode($response);
 
-	} else {
+	switch ($sort_method) {
+		case 1:
+		$response["requests"] = QuickSort::rsort('rating', $response["requests"]);
+		break;
 
-		$response["message"] = "false";
-		echo json_encode($response);
-
+		case 2:
+		$response["requests"] = QuickSort::sort('distance', $response["requests"]);
+		break;
+		
+		case 3:
+		$response["requests"] = QuickSort::sort('bidding_amount', $response["requests"]);
+		break;
+		
+		default:
+			$response["requests"] = QuickSort::rsort('rating', $response["requests"]);
+		break;
 	}
 
-	$conn = null;
+	echo json_encode($response);
+
+	
+} else {
+
+	$response["message"] = "false";
+	echo json_encode($response);
+
+}
+
+$conn = null;
 
 ?>
